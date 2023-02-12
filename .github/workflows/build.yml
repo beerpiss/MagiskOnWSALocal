@@ -1,0 +1,87 @@
+name: Build
+
+on: 
+  workflow_dispatch:
+    inputs:
+      arch:
+        type: choice
+        description: Build architecture
+        options:
+          - x64
+          - arm64
+      release_type:
+        type: choice
+        description: WSA release type
+        options:
+          - retail
+          - RP
+          - WIS
+          - WIF
+      root_solution:
+        type: choice
+        description: Root solution
+        options:
+          - magisk
+          - none
+      magisk_version:
+        type: choice
+        description: Magisk version
+        options:
+          - stable
+          - beta
+          - canary
+          - debug
+      gapps_flavor:
+        type: choice
+        description: GApps flavor
+        options:
+          - OpenGApps
+          - MindTheGapps
+          - none
+      remove_amz:
+        type: boolean
+        description: Remove Amazon Appstore
+      compress:
+        type: choice
+        description: Compress format
+        options:
+          - zip
+          - 7z
+          - xz
+          - none
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: |
+          if [ "${{ inputs.remove_amz }}" = "true" ]; then
+            REMOVE_AMAZON="--remove-amazon"
+          else
+            REMOVE_AMAZON=""
+          fi
+
+          if [ "${{ inputs.compress }}" != "none" ]; then
+            COMPRESS="--compress --compress-format ${{ inputs.compress }}"
+          else
+            COMPRESS=""
+          fi
+
+          cd scripts
+          ./build.sh --arch "${{ inputs.arch }}" \
+                     --release-type "${{ inputs.release_type }}" \
+                     --root-sol "${{ inputs.root_solution }}" \
+                     --magisk-ver "${{ inputs.magisk_version }}" \
+                     --gapps-brand "${{ inputs.gapps_flavor }}" \
+                     --gapps-variant pico \
+                     "$REMOVE_AMAZON" \
+                     "$COMPRESS" \
+      - uses: actions/upload-artifact@v3
+        with:
+          name: output
+          path: output/
+          
+
+      
+      
