@@ -55,6 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: sudo ./scripts/install_deps.sh
       - run: |
           if [ "${{ inputs.remove_amz }}" = "true" ]; then
             REMOVE_AMAZON="--remove-amazon"
