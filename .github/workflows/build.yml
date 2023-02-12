@@ -75,8 +75,8 @@ jobs:
                      --magisk-ver "${{ inputs.magisk_version }}" \
                      --gapps-brand "${{ inputs.gapps_flavor }}" \
                      --gapps-variant pico \
-                     "$REMOVE_AMAZON" \
-                     "$COMPRESS" \
+                     $REMOVE_AMAZON \
+                     $COMPRESS \
       - uses: actions/upload-artifact@v3
         with:
           name: output
